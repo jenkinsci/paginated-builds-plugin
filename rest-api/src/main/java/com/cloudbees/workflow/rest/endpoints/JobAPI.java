@@ -42,31 +42,22 @@ import java.util.ArrayList;
 /**
  * API Action handler to return Job info.
  * <p>
- * Bound to {@code ${{rootURL}/job/<jobname>/wfapi/*}}
+ * Bound to {@code ${{rootURL}/job/<jobname>/valet/*}}
  * </p>
  *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @Extension
 public class JobAPI extends AbstractAPIActionHandler {
+    private static final int DEFAULT_PAGE_SIZE = 100;
 
     public static String getUrl(Job job) {
         return ModelUtil.getFullItemUrl(job.getUrl()) + URL_BASE + "/";
     }
 
-    private static final int DEFAULT_PAGE_SIZE = 100;
-
     public static String getBuildsUrl(Job job) {
         return getUrl(job) + "builds";
     }
 
-    /**
-     * Get all Workflow Job runs/builds since the specified run/build name.
-     * @param since The run/build name at which to stop returning (inclusive),
-     *              or null/empty if all runs/builds are to be returned.
-     * @param fullStages Return the stageNodes within each stage
-     * @return The runs list.
-     */
     @ServeJson
     public List<BuildExt> doBuilds(@QueryParameter int start, @QueryParameter int size) {
         ArrayList<BuildExt> builds = new ArrayList<>();
