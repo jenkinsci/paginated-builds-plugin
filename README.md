@@ -4,12 +4,12 @@ The `valet-jenkins-plugin` exposes a new REST API endpoint to access paginated b
 
 ## Paginated Builds Endpoint
 
-### GET `<JENKINS_URL>`/job/`<job_name>`/valet/builds?start=`<BUILD_ID>`&size=`<PAGE_SIZE>`
+### GET `<jenkins_url>`/job/`<job_name>`/valet/builds?start=`<build_id>`&size=`<page_size>`
 
 - `start`: The build ID to start from.
 - `size`: The number of builds to return.
 - `job_name`: The name of the Jenkins job to get builds for.
-- `JENKINS_URL`: The URL of the Jenkins instance to get builds for.
+- `jenkins_url`: The URL of the Jenkins instance to get builds for.
 
 ```json
 // jenkins/job/test/valet/builds?start=3&size=2
