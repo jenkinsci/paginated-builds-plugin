@@ -9,8 +9,8 @@ public class BuildExt {
     private long startTimeMillis;
     private long duration;
     private String fullName;
-    public String url;
-    public String result;
+    private String url;
+    private String result;
 
     public String getId() {
         return id;
