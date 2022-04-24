@@ -25,57 +25,47 @@ package com.cloudbees.workflow.rest.endpoints;
 
 import com.cloudbees.workflow.rest.AbstractAPIActionHandler;
 import com.cloudbees.workflow.rest.external.JobExt;
+import com.cloudbees.workflow.rest.external.BuildExt;
 import com.cloudbees.workflow.util.ModelUtil;
 import com.cloudbees.workflow.util.ServeJson;
 import hudson.Extension;
 import hudson.model.Job;
-import hudson.model.Job;
+import hudson.model.Run;
+
 import org.kohsuke.stapler.QueryParameter;
+import hudson.model.Fingerprint.RangeSet;
 
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * API Action handler to return Job info.
  * <p>
- * Bound to {@code ${{rootURL}/job/<jobname>/wfapi/*}}
+ * Bound to {@code ${{rootURL}/job/<jobname>/valet/*}}
  * </p>
  *
- * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 @Extension
 public class JobAPI extends AbstractAPIActionHandler {
+    private static final int DEFAULT_PAGE_SIZE = 100;
 
     public static String getUrl(Job job) {
         return ModelUtil.getFullItemUrl(job.getUrl()) + URL_BASE + "/";
     }
 
-    public static String getDescribeUrl(Job job) {
-        return getUrl(job) + "describe";
-    }
-
-    public static String getRunsUrl(Job job) {
-        return getUrl(job) + "runs";
-    }
-
-    /**
-     * Get all Workflow Job runs/builds since the specified run/build name.
-     * @param since The run/build name at which to stop returning (inclusive),
-     *              or null/empty if all runs/builds are to be returned.
-     * @param fullStages Return the stageNodes within each stage
-     * @return The runs list.
-     */
-    @ServeJson
-    public JobExt doRuns(@QueryParameter String since, @QueryParameter boolean fullStages) {
-        return JobExt.create(getJob().getBuilds(), since, fullStages);
+    public static String getBuildsUrl(Job job) {
+        return getUrl(job) + "builds";
     }
 
     @ServeJson
-    public JobExt doIndex() {
-        return doDescribe();
-    }
+    public List<BuildExt> doBuilds(@QueryParameter int start, @QueryParameter int size) {
+        ArrayList<BuildExt> builds = new ArrayList<>();
+        size = size == 0 ? DEFAULT_PAGE_SIZE : size;
+        List<Run> rawBuilds = getJob().getBuilds(RangeSet.fromString(start + "-" + (size + start - 1), false));
+        for (Run build : rawBuilds) {
+            builds.add(BuildExt.create(build));
+        }
 
-    @ServeJson
-    public JobExt doDescribe() {
-        return JobExt.create(getJob());
+        return builds;
     }
 }

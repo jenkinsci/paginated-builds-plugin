@@ -93,10 +93,7 @@ public class JobExt {
     public static JobExt create(Job job) {
         JobExt jobExt = new JobExt();
 
-        jobExt.set_links((JobLinks) new JobLinks().initSelf(JobAPI.getDescribeUrl(job)));
-        jobExt.get_links().setRuns(Link.newLink(JobAPI.getRunsUrl(job)));
-        jobExt.setName("Testing!!!!!!!!!!!");
-        jobExt.setRunCount(countRuns(job));
+        jobExt.setName(job.getDisplayName());
 
         return jobExt;
     }
