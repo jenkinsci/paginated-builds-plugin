@@ -70,7 +70,7 @@ public class BuildExt {
         buildExt.setUrl(run.getAbsoluteUrl());
 
         Result result = run.getResult();
-        if (result != null) {
+        buildExt.setResult(result == null ? "null" : result.toString());
             buildExt.setResult(result.toString());
         } else {
             buildExt.setResult("null");
