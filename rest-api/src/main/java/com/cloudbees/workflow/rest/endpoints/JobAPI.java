@@ -54,6 +54,8 @@ public class JobAPI extends AbstractAPIActionHandler {
         return ModelUtil.getFullItemUrl(job.getUrl()) + URL_BASE + "/";
     }
 
+    private static final int DEFAULT_PAGE_SIZE = 100;
+
     public static String getBuildsUrl(Job job) {
         return getUrl(job) + "builds";
     }
@@ -68,6 +70,7 @@ public class JobAPI extends AbstractAPIActionHandler {
     @ServeJson
     public List<BuildExt> doBuilds(@QueryParameter int start, @QueryParameter int size) {
         ArrayList<BuildExt> builds = new ArrayList<>();
+        size = size == 0 ? DEFAULT_PAGE_SIZE : size;
         List<Run> rawBuilds = getJob().getBuilds(RangeSet.fromString(start + "-" + (size + start - 1), false));
         for (Run build : rawBuilds) {
             builds.add(BuildExt.create(build));
