@@ -26,22 +26,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.jenkins-ci.plugins.pipeline-stage-view</groupId>
+        <groupId>org.jenkins-ci.plugins.valet</groupId>
         <artifactId>parent-pom</artifactId>
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>pipeline-rest-api</artifactId>
+    <artifactId>valet-rest-api</artifactId>
     <version>${revision}${changelist}</version>
-    <name>Pipeline: REST API Plugin</name>
-    <description>Provides a REST API to access pipeline and pipeline run data</description>
-    <url>https://github.com/jenkinsci/pipeline-stage-view-plugin</url>
+    <name>Valet: REST API Plugin</name>
+    <description>Provides a REST API to access paginated build data</description>
+    <url>https://github.com/jenkinsci/valet-plugin</url>
     <packaging>hpi</packaging>
 
     <scm>
-       <connection>scm:git:git://github.com/jenkinsci/pipeline-stage-view-plugin.git</connection>
-       <developerConnection>scm:git:git@github.com:jenkinsci/pipeline-stage-view-plugin.git</developerConnection>
-       <url>https://github.com/jenkinsci/pipeline-stage-view-plugin</url>
+       <connection>scm:git:git://github.com/github/valet-jenkins-plugin.git</connection>
+       <developerConnection>scm:git:git@github.com:github/valet-jenkins-plugin.git</developerConnection>
+       <url>https://github.com/github/valet-jenkins-plugin</url>
        <tag>${scmTag}</tag>
     </scm>
 
