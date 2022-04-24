@@ -71,10 +71,6 @@ public class BuildExt {
 
         Result result = run.getResult();
         buildExt.setResult(result == null ? "null" : result.toString());
-            buildExt.setResult(result.toString());
-        } else {
-            buildExt.setResult("null");
-        }
 
         return buildExt;
     }
