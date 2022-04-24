@@ -7,6 +7,10 @@ public class BuildExt {
 
     private String id;
     private long startTimeMillis;
+    private long duration;
+    private String fullName;
+    public String url;
+    public String result;
 
     public String getId() {
         return id;
@@ -24,11 +28,53 @@ public class BuildExt {
         this.startTimeMillis = startTimeMillis;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
     public static BuildExt create(Run run) {
 
         final BuildExt buildExt = new BuildExt();
         buildExt.setId(run.getId());
         buildExt.setStartTimeMillis(run.getStartTimeInMillis());
+        buildExt.setDuration(run.getDuration());
+        buildExt.setFullName(run.getFullDisplayName());
+        buildExt.setUrl(run.getAbsoluteUrl());
+
+        Result result = run.getResult();
+        if (result != null) {
+            buildExt.setResult(result.toString());
+        } else {
+            buildExt.setResult("null");
+        }
 
         return buildExt;
     }
