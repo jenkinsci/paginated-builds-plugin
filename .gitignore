@@ -13,7 +13,6 @@ node/
 node_modules/
 npm-debug.log
 
-ui/src/main/webapp/jsmodules
 
 demo/snapshot-plugins/
 

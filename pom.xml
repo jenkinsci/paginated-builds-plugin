@@ -82,7 +82,6 @@
 
     <modules>
         <module>rest-api</module>
-        <module>ui</module>
     </modules>
     <build>
         <plugins>

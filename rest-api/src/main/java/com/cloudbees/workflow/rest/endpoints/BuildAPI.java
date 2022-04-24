@@ -24,7 +24,6 @@
 package com.cloudbees.workflow.rest.endpoints;
 
 import com.cloudbees.workflow.rest.AbstractAPIActionHandler;
-import com.cloudbees.workflow.rest.external.JobExt;
 import com.cloudbees.workflow.rest.external.BuildExt;
 import com.cloudbees.workflow.util.ModelUtil;
 import com.cloudbees.workflow.util.ServeJson;
@@ -46,7 +45,7 @@ import java.util.ArrayList;
  *
  */
 @Extension
-public class JobAPI extends AbstractAPIActionHandler {
+public class BuildAPI extends AbstractAPIActionHandler {
     private static final int DEFAULT_PAGE_SIZE = 100;
 
     public static String getUrl(Job job) {
