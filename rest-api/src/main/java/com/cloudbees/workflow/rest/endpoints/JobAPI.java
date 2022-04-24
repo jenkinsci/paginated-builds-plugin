@@ -34,7 +34,6 @@ import hudson.model.Run;
 
 import org.kohsuke.stapler.QueryParameter;
 import hudson.model.Fingerprint.RangeSet;
-import hudson.model.Fingerprint.Range;
 
 import java.util.List;
 import java.util.ArrayList;
