@@ -81,7 +81,7 @@
     </pluginRepositories>
 
     <modules>
-        <module>rest-api</module>
+        <module>api</module>
     </modules>
     <build>
         <plugins>
