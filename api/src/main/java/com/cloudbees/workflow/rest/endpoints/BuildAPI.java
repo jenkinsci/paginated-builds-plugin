@@ -47,6 +47,7 @@ import java.util.ArrayList;
 @Extension
 public class BuildAPI extends AbstractAPIActionHandler {
     private static final int DEFAULT_PAGE_SIZE = 100;
+    private static final int DEFAULT_START = 1;
 
     public static String getUrl(Job job) {
         return ModelUtil.getFullItemUrl(job.getUrl()) + URL_BASE + "/";
@@ -59,6 +60,7 @@ public class BuildAPI extends AbstractAPIActionHandler {
     @ServeJson
     public List<BuildExt> doBuilds(@QueryParameter int start, @QueryParameter int size) {
         size = size == 0 ? DEFAULT_PAGE_SIZE : size;
+        start = start == 0 ? DEFAULT_START : start;
 
         List<Run> rawBuilds = getJob().getBuilds(RangeSet.fromString(start + "-" + (size + start - 1), false));
         return rawBuilds.stream().map(b -> new BuildExt(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
