@@ -58,13 +58,9 @@ public class BuildAPI extends AbstractAPIActionHandler {
 
     @ServeJson
     public List<BuildExt> doBuilds(@QueryParameter int start, @QueryParameter int size) {
-        ArrayList<BuildExt> builds = new ArrayList<>();
         size = size == 0 ? DEFAULT_PAGE_SIZE : size;
-        List<Run> rawBuilds = getJob().getBuilds(RangeSet.fromString(start + "-" + (size + start - 1), false));
-        for (Run build : rawBuilds) {
-            builds.add(BuildExt.create(build));
-        }
 
-        return builds;
+        List<Run> rawBuilds = getJob().getBuilds(RangeSet.fromString(start + "-" + (size + start - 1), false));
+        return rawBuilds.stream().map(b -> BuildExt.create(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 }
