@@ -11,6 +11,8 @@ public class BuildExt {
     private String fullName;
     private String url;
     private String result;
+    private long queueId;
+    private long queueTimeMillis;
 
     public String getId() {
         return id;
@@ -60,6 +62,22 @@ public class BuildExt {
         this.result = result;
     }
 
+    public long getQueueId() {
+        return queueId;
+    }
+
+    public void setQueueId(long queueId) {
+        this.queueId = queueId;
+    }
+
+    public long getQueueTimeMillis() {
+        return queueTimeMillis;
+    }
+
+    public void setQueueTime(long queueTime) {
+        this.queueTimeMillis = queueTime;
+    }
+
     public static BuildExt create(Run run) {
 
         final BuildExt buildExt = new BuildExt();
@@ -68,6 +86,8 @@ public class BuildExt {
         buildExt.setDuration(run.getDuration());
         buildExt.setFullName(run.getFullDisplayName());
         buildExt.setUrl(run.getAbsoluteUrl());
+        buildExt.setQueueId(run.getQueueId());
+        buildExt.setQueueTime(run.getTimeInMillis());
 
         Result result = run.getResult();
         buildExt.setResult(result == null ? "null" : result.toString());
