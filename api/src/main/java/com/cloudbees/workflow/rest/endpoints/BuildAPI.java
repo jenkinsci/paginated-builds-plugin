@@ -61,6 +61,6 @@ public class BuildAPI extends AbstractAPIActionHandler {
         size = size == 0 ? DEFAULT_PAGE_SIZE : size;
 
         List<Run> rawBuilds = getJob().getBuilds(RangeSet.fromString(start + "-" + (size + start - 1), false));
-        return rawBuilds.stream().map(b -> BuildExt.create(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        return rawBuilds.stream().map(b -> new BuildExt(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 }
