@@ -23,11 +23,8 @@
  */
 package com.cloudbees.workflow.util;
 
-import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
-
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
@@ -37,20 +34,12 @@ public class ModelUtil {
     private ModelUtil() {
     }
 
-    public static String getFullItemUrl(FlowNode item) {
-        try {
-            return getFullItemUrl(item.getUrl());
-        } catch (IOException e) {
-            throw new IllegalStateException("Unexpected error getting URL for a Stage FlowNode.", e);
-        }
-    }
-
     public static String getFullItemUrl(String itemUrl) {
         String rootUrl = ModelUtil.getRootUrl();
         if (!itemUrl.endsWith("/")) {
             itemUrl += "/";
         }
-        return (rootUrl.endsWith("/")) ? rootUrl+itemUrl : rootUrl + "/" + itemUrl;
+        return (rootUrl.endsWith("/")) ? rootUrl + itemUrl : rootUrl + "/" + itemUrl;
     }
 
     public static String getRootUrl() {
