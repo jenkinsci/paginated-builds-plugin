@@ -6,7 +6,7 @@ public class BuildResponse {
   private int count;
   private List<BuildExt> builds;
 
-  public BuildResponse(long count, List<BuildExt> builds) {
+  public BuildResponse(int count, List<BuildExt> builds) {
     this.count = count;
     this.builds = builds;
   }
