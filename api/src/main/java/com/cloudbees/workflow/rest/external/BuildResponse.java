@@ -11,7 +11,7 @@ public class BuildResponse {
     this.builds = builds;
   }
 
-  public long getCount() {
+  public int getCount() {
     return count;
   }
 
