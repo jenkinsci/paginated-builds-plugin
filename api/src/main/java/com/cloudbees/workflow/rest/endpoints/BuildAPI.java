@@ -25,6 +25,7 @@ package com.cloudbees.workflow.rest.endpoints;
 
 import com.cloudbees.workflow.rest.AbstractAPIActionHandler;
 import com.cloudbees.workflow.rest.external.BuildExt;
+import com.cloudbees.workflow.rest.external.BuildResponse;
 import com.cloudbees.workflow.util.ModelUtil;
 import com.cloudbees.workflow.util.ServeJson;
 import hudson.Extension;
@@ -58,11 +59,12 @@ public class BuildAPI extends AbstractAPIActionHandler {
     }
 
     @ServeJson
-    public List<BuildExt> doBuilds(@QueryParameter int start, @QueryParameter int size) {
+    public BuildResponse doBuilds(@QueryParameter int start, @QueryParameter int size) {
         size = size == 0 ? DEFAULT_PAGE_SIZE : size;
         start = start == 0 ? DEFAULT_START : start;
 
         List<Run> rawBuilds = getJob().getBuilds(RangeSet.fromString(start + "-" + (size + start - 1), false));
-        return rawBuilds.stream().map(b -> new BuildExt(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        ArrayList<BuildExt> builds = rawBuilds.stream().map(b -> new BuildExt(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        return new BuildResponse(builds.size(), builds);
     }
 }
