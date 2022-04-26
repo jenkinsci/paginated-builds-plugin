@@ -3,7 +3,7 @@ package com.cloudbees.workflow.rest.external;
 import java.util.List;
 
 public class BuildResponse {
-  private long count;
+  private int count;
   private List<BuildExt> builds;
 
   public BuildResponse(long count, List<BuildExt> builds) {
