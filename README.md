@@ -14,14 +14,30 @@ The `valet-jenkins-plugin` exposes a new REST API endpoint to access paginated b
 ```json
 // jenkins/job/test/valet/builds?start=3&size=2
 
-[
-  {
-    "id": "3",
-    "startTimeMillis": 1650842700846
-  },
-  {
-    "id": "4",
-    "startTimeMillis": 1650842760960
-  }
-]
+{
+  "count": 99,
+  "builds": [
+    {
+      "id": "1",
+      "startTimeMillis": 1614174840363,
+      "duration": 592,
+      "fullName": "integration-tests » designer » freestyle-elephant #1",
+      "url": "job/integration-tests/job/designer/job/freestyle-elephant/1/",
+      "result": "FAILURE",
+      "queueId": 8198,
+      "queueTimeMillis": 1614174840346
+    },
+    {
+      "id": "2",
+      "startTimeMillis": 1614261240361,
+      "duration": 168,
+      "fullName": "integration-tests » designer » freestyle-elephant #2",
+      "url": "job/integration-tests/job/designer/job/freestyle-elephant/2/",
+      "result": "FAILURE",
+      "queueId": 9486,
+      "queueTimeMillis": 1614261240346
+    },
+    ...
+  ]
+}
 ```
