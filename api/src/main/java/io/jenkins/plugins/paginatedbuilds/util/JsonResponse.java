@@ -1,4 +1,4 @@
-package com.cloudbees.workflow.util;
+package io.jenkins.plugins.paginatedbuilds.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.kohsuke.stapler.HttpResponse;

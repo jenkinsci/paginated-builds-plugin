@@ -1,4 +1,4 @@
-package com.cloudbees.workflow.util;
+package io.jenkins.plugins.paginatedbuilds.util;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;

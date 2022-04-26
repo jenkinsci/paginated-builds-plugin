@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2013-2016, CloudBees, Inc.
+ * Copyright (c) 2022, CloudBees, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.cloudbees.workflow.rest;
+package io.jenkins.plugins.paginatedbuilds.rest;
 
 import hudson.model.Action;
 import hudson.model.Job;
@@ -36,7 +36,7 @@ import java.util.Collections;
  */
 public abstract class AbstractAPIActionHandler extends TransientActionFactory<Job> implements Action {
 
-    public static final String URL_BASE = "valet";
+    public static final String URL_BASE = "builds";
 
     public Job target;
 

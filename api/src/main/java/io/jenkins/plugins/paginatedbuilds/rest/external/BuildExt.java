@@ -1,4 +1,4 @@
-package com.cloudbees.workflow.rest.external;
+package io.jenkins.plugins.paginatedbuilds.rest.external;
 
 import hudson.model.Result;
 import hudson.model.Run;
@@ -15,6 +15,8 @@ public class BuildExt {
     private String result;
     private String builtOn;
 
+    public BuildExt() {}
+
     public BuildExt(Run<?, ?> run) {
         this.id = run.getId();
         this.queueTimeMillis = run.getTimeInMillis();
@@ -22,7 +24,11 @@ public class BuildExt {
         this.duration = run.getDuration();
         this.fullName = run.getFullDisplayName();
         this.url = run.getUrl();
-        this.builtOn = ((Build) run).getBuiltOnStr();
+        if (run instanceof Build) {
+            this.builtOn = ((Build) run).getBuiltOnStr();
+        } else {
+            this.builtOn = "";
+        }
 
         Result result = run.getResult();
         this.result = result == null ? "null" : result.toString();
@@ -58,5 +64,37 @@ public class BuildExt {
 
     public String getBuiltOn() {
         return builtOn;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setStartTimeMillis(long startTimeMillis) {
+        this.startTimeMillis = startTimeMillis;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public void setQueueTimeMillis(long queueTimeMillis) {
+        this.queueTimeMillis = queueTimeMillis;
+    }
+
+    public void setBuiltOn(String builtOn) {
+        this.builtOn = builtOn;
     }
 }
