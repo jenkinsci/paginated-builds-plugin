@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2013-2016, CloudBees, Inc.
+ * Copyright (c) 2022, CloudBees, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.cloudbees.workflow.rest.endpoints;
+package io.jenkins.plugins.paginatedbuilds.rest.endpoints;
 
-import com.cloudbees.workflow.rest.external.BuildExt;
-import com.cloudbees.workflow.util.JSONReadWrite;
+import io.jenkins.plugins.paginatedbuilds.rest.external.BuildExt;
+import io.jenkins.plugins.paginatedbuilds.rest.external.BuildResponse;
+import io.jenkins.plugins.paginatedbuilds.util.JSONReadWrite;
 import com.gargoylesoftware.htmlunit.Page;
 import hudson.model.Action;
 import hudson.model.Result;
@@ -72,10 +73,10 @@ public class BuildAPITest {
         QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
         jenkinsRule.assertBuildStatusSuccess(build);
 
-        BuildExt[] builds = getBuilds(job, "valet/builds");
+        BuildResponse builds = getBuilds(job, "builds");
 
-        Assert.assertEquals(1, builds.length);
-        BuildExt buildExt = builds[0];
+        Assert.assertEquals(1, builds.getCount());
+        BuildExt buildExt = builds.getBuilds().get(0);
         assertBuildInfoOkay(job, buildExt, "1");
     }
 
@@ -88,10 +89,10 @@ public class BuildAPITest {
         QueueTaskFuture<FreeStyleBuild> build2 = job.scheduleBuild2(0);
         jenkinsRule.assertBuildStatusSuccess(build2);
 
-        BuildExt[] builds = getBuilds(job, "valet/builds");
+        BuildResponse builds = getBuilds(job, "builds");
 
-        Assert.assertEquals(2, builds.length);
-        BuildExt buildExt = builds[1];
+        Assert.assertEquals(2, builds.getCount());
+        BuildExt buildExt = builds.getBuilds().get(1);
         assertBuildInfoOkay(job, buildExt, "2");
     }
 
@@ -104,10 +105,10 @@ public class BuildAPITest {
             jenkinsRule.assertBuildStatusSuccess(build);
         }
 
-        BuildExt[] builds = getBuilds(job, "valet/builds?size=5");
+        BuildResponse builds = getBuilds(job, "builds?size=5");
 
-        Assert.assertEquals(5, builds.length);
-        BuildExt buildExt = builds[4];
+        Assert.assertEquals(5, builds.getCount());
+        BuildExt buildExt = builds.getBuilds().get(4);
         assertBuildInfoOkay(job, buildExt, "5");
     }
 
@@ -120,10 +121,10 @@ public class BuildAPITest {
             jenkinsRule.assertBuildStatusSuccess(build);
         }
 
-        BuildExt[] builds = getBuilds(job, "valet/builds?start=6");
+        BuildResponse builds = getBuilds(job, "builds?start=6");
 
-        Assert.assertEquals(5, builds.length);
-        BuildExt buildExt = builds[4];
+        Assert.assertEquals(5, builds.getCount());
+        BuildExt buildExt = builds.getBuilds().get(4);
         assertBuildInfoOkay(job, buildExt, "10");
     }
 
@@ -136,10 +137,10 @@ public class BuildAPITest {
             jenkinsRule.assertBuildStatusSuccess(build);
         }
 
-        BuildExt[] builds = getBuilds(job, "valet/builds?start=6&size=2");
+        BuildResponse builds = getBuilds(job, "builds?start=6&size=2");
 
-        Assert.assertEquals(2, builds.length);
-        BuildExt buildExt = builds[1];
+        Assert.assertEquals(2, builds.getCount());
+        BuildExt buildExt = builds.getBuilds().get(1);
         assertBuildInfoOkay(job, buildExt, "7");
     }
 
@@ -162,10 +163,10 @@ public class BuildAPITest {
         QueueTaskFuture<WorkflowRun> build = job.scheduleBuild2(0);
         jenkinsRule.assertBuildStatusSuccess(build);
 
-        BuildExt[] builds = getBuilds(job, "valet/builds");
+        BuildResponse builds = getBuilds(job, "builds");
 
-        Assert.assertEquals(1, builds.length);
-        BuildExt buildExt = builds[0];
+        Assert.assertEquals(1, builds.getCount());
+        BuildExt buildExt = builds.getBuilds().get(0);
         assertBuildInfoOkay(job, buildExt, "1");
     }
 
@@ -176,9 +177,10 @@ public class BuildAPITest {
         Assert.assertTrue(buildExt.getStartTimeMillis() > startTime);
         Assert.assertEquals(jobNumber, buildExt.getId());
         Assert.assertTrue(buildExt.getStartTimeMillis() > buildExt.getQueueTimeMillis());
+        Assert.assertEquals("", buildExt.getBuiltOn());
     }
 
-    private BuildExt[] getBuilds(Job job, String endpoint) throws IOException, SAXException{
+    private BuildResponse getBuilds(Job job, String endpoint) throws IOException, SAXException{
       JenkinsRule.WebClient webClient = jenkinsRule.createWebClient();
 
       String buildsUrl = job.getUrl() + endpoint;
@@ -187,6 +189,6 @@ public class BuildAPITest {
 
       JSONReadWrite jsonReadWrite = new JSONReadWrite();
 
-      return jsonReadWrite.fromString(jsonResponse, BuildExt[].class);
+      return jsonReadWrite.fromString(jsonResponse, BuildResponse.class);
     }
 }

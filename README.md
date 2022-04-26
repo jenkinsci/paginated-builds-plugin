@@ -1,18 +1,18 @@
-# Valet Jenkins Plugin
+# Paginated Builds Plugin
 
-The `valet-jenkins-plugin` exposes a new REST API endpoint to access paginated build data for a Jenkins instance. This plugin is built for and used by the [Valet](http://github.com/github/valet) `forecast` command line tool. Out of the box Jenkins does not provide a REST API endpoint for accessing build data in pages, so this plugin fills that gap, by exposing the following new endpoint
+The `paginated-builds` plugin exposes a new REST API endpoint to access paginated build data for a Jenkins instance. Out of the box Jenkins does not provide a REST API endpoint for accessing build data in pages, so this plugin fills that gap, by exposing the following new endpoint
 
 ## Paginated Builds Endpoint
 
-### GET `<jenkins_url>`/job/`<job_name>`/valet/builds?start=`<build_id>`&size=`<page_size>`
+### GET `<jenkins_url>`/job/`<job_name>`/builds?start=`<build_id>`&size=`<page_size>`
 
-- `start`: The build ID to start from.
-- `size`: The number of builds to return.
+- `start`: The build ID to start from. (1 if not specified)
+- `size`: The number of builds to return. (100 if not specified)
 - `job_name`: The name of the Jenkins job to get builds for.
 - `jenkins_url`: The URL of the Jenkins instance to get builds for.
 
 ```json
-// jenkins/job/test/valet/builds?start=3&size=2
+// jenkins/job/test/builds?start=3&size=2
 
 {
   "count": 99,

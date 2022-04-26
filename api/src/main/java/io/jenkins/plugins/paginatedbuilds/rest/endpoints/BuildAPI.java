@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2013-2016, CloudBees, Inc.
+ * Copyright (c) 2022, CloudBees, Inc.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.cloudbees.workflow.rest.endpoints;
+package io.jenkins.plugins.paginatedbuilds.rest.endpoints;
 
-import com.cloudbees.workflow.rest.AbstractAPIActionHandler;
-import com.cloudbees.workflow.rest.external.BuildExt;
-import com.cloudbees.workflow.rest.external.BuildResponse;
-import com.cloudbees.workflow.util.ModelUtil;
-import com.cloudbees.workflow.util.ServeJson;
+import io.jenkins.plugins.paginatedbuilds.rest.AbstractAPIActionHandler;
+import io.jenkins.plugins.paginatedbuilds.rest.external.BuildExt;
+import io.jenkins.plugins.paginatedbuilds.rest.external.BuildResponse;
+import io.jenkins.plugins.paginatedbuilds.util.ModelUtil;
+import io.jenkins.plugins.paginatedbuilds.util.ServeJson;
 import hudson.Extension;
 import hudson.model.Job;
 import hudson.model.Run;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
 /**
  * API Action handler to return Job info.
  * <p>
- * Bound to {@code ${{rootURL}/job/<jobname>/valet/*}}
+ * Bound to {@code ${{rootURL}/job/<jobname>/builds/*}}
  * </p>
  *
  */
@@ -54,8 +54,9 @@ public class BuildAPI extends AbstractAPIActionHandler {
         return ModelUtil.getFullItemUrl(job.getUrl()) + URL_BASE + "/";
     }
 
-    public static String getBuildsUrl(Job job) {
-        return getUrl(job) + "builds";
+    @ServeJson
+    public BuildResponse doIndex(@QueryParameter int start, @QueryParameter int size) {
+        return doBuilds(start, size);
     }
 
     @ServeJson
