@@ -25,7 +25,8 @@ The `valet-jenkins-plugin` exposes a new REST API endpoint to access paginated b
       "url": "job/integration-tests/job/designer/job/freestyle-elephant/1/",
       "result": "FAILURE",
       "queueId": 8198,
-      "queueTimeMillis": 1614174840346
+      "queueTimeMillis": 1614174840346,
+      "builtOn": "linux2"
     },
     {
       "id": "2",
@@ -35,7 +36,8 @@ The `valet-jenkins-plugin` exposes a new REST API endpoint to access paginated b
       "url": "job/integration-tests/job/designer/job/freestyle-elephant/2/",
       "result": "FAILURE",
       "queueId": 9486,
-      "queueTimeMillis": 1614261240346
+      "queueTimeMillis": 1614261240346,
+      "builtOn": "__"
     },
     ...
   ]
