@@ -65,7 +65,22 @@ public class BuildAPI extends AbstractAPIActionHandler {
         start = start == 0 ? DEFAULT_START : start;
 
         List<Run> rawBuilds = getJob().getBuilds(RangeSet.fromString(start + "-" + (size + start - 1), false));
-        ArrayList<BuildExt> builds = rawBuilds.stream().map(b -> new BuildExt(b)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+        // In case there we're some missing builds in the range set, fill out the rest
+        // of the range if possible
+        while (rawBuilds.size() < size) {
+            int missingBuilds = size - rawBuilds.size();
+            Run nextRun = rawBuilds.get(rawBuilds.size() - 1).getNextBuild();
+            if (nextRun == null) {
+                break;
+            }
+
+            rawBuilds.addAll(getJob().getBuilds(RangeSet.fromString(
+                    nextRun.getId() + "-" + (Integer.parseInt(nextRun.getId()) + missingBuilds - 1), false)));
+        }
+
+        ArrayList<BuildExt> builds = rawBuilds.stream().map(b -> new BuildExt(b)).collect(ArrayList::new,
+                ArrayList::add, ArrayList::addAll);
         return new BuildResponse(builds.size(), builds);
     }
 }

@@ -31,7 +31,7 @@
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>paginated-builds-rest-api</artifactId>
+    <artifactId>paginated-builds</artifactId>
     <version>${revision}${changelist}</version>
     <name>Paginated Builds: REST API Plugin</name>
     <description>Provides a REST API endpoint to access paginated build data</description>
