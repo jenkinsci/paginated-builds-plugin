@@ -25,12 +25,15 @@ package io.jenkins.plugins.paginatedbuilds.rest.endpoints;
 
 import io.jenkins.plugins.paginatedbuilds.rest.external.BuildExt;
 import io.jenkins.plugins.paginatedbuilds.rest.external.BuildResponse;
+import io.jenkins.plugins.paginatedbuilds.rest.endpoints.*;
 import io.jenkins.plugins.paginatedbuilds.util.JSONReadWrite;
 import com.gargoylesoftware.htmlunit.Page;
 import hudson.model.Action;
 import hudson.model.Result;
 import hudson.model.queue.QueueTaskFuture;
 import hudson.model.Job;
+import hudson.model.Run;
+import hudson.model.Fingerprint.RangeSet;
 import hudson.model.FreeStyleProject;
 import hudson.model.FreeStyleBuild;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
@@ -46,6 +49,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import org.xml.sax.SAXException;
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -168,6 +172,22 @@ public class BuildAPITest {
         Assert.assertEquals(1, builds.getCount());
         BuildExt buildExt = builds.getBuilds().get(0);
         assertBuildInfoOkay(job, buildExt, "1");
+    }
+
+    @Test
+    public void testAdditionalBuilds() throws Exception {
+        FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+        BuildAPI buildAPI = new BuildAPI();
+        for (int i = 0; i < 10; i++) {
+            QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+            jenkinsRule.assertBuildStatusSuccess(build);
+        }
+
+        RangeSet range = RangeSet.fromString("1-8", false);
+        List<Run> rawBuilds = ((Job) job).getBuilds(range);
+        List<Run> additionalBuilds = buildAPI.getAdditionalBuilds((Job) job, rawBuilds, 15);
+
+        Assert.assertEquals(10, additionalBuilds.size());
     }
 
     private void assertBuildInfoOkay(Job job, BuildExt buildExt, String jobNumber) {
