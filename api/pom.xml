@@ -27,11 +27,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jenkins-ci.plugins.paginated-builds</groupId>
-        <artifactId>parent-pom</artifactId>
+        <artifactId>paginated-builds</artifactId>
         <version>${revision}${changelist}</version>
     </parent>
 
-    <artifactId>paginated-builds</artifactId>
+    <artifactId>paginated-builds-rest-api</artifactId>
     <version>${revision}${changelist}</version>
     <name>Paginated Builds: REST API Plugin</name>
     <description>Provides a REST API endpoint to access paginated build data</description>
