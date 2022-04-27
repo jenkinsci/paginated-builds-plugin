@@ -33,7 +33,7 @@
     </parent>
 
     <groupId>org.jenkins-ci.plugins.paginated-builds</groupId>
-    <artifactId>parent-pom</artifactId>
+    <artifactId>paginated-builds</artifactId>
     <version>${revision}${changelist}</version>
     <packaging>pom</packaging>
     <name>Paginated Builds: Parent POM</name>
@@ -58,7 +58,7 @@
     <properties>
         <revision>2.24</revision>
         <bom>2.235.x</bom>
-        <jenkins.version>2.249.1</jenkins.version>
+        <jenkins.version>2.277.1</jenkins.version>
         <changelist>-SNAPSHOT</changelist>
         <java.level>8</java.level>
         <workflow.version>2.0</workflow.version>
