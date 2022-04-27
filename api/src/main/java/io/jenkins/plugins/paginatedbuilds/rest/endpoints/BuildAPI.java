@@ -50,7 +50,6 @@ public class BuildAPI extends AbstractAPIActionHandler {
     private static final int DEFAULT_PAGE_SIZE = 100;
     private static final int DEFAULT_START = 1;
 
-    public BuildAPI () {}
     public static String getUrl(Job job) {
         return ModelUtil.getFullItemUrl(job.getUrl()) + URL_BASE + "/";
     }
