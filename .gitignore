@@ -2,7 +2,6 @@ target
 work
 .DS_Store
 
-.vscode/
 .idea/
 *.iml
 *.iws
