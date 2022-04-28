@@ -22,6 +22,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import org.xml.sax.SAXException;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public class BuildAPITest {
     QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
     jenkinsRule.assertBuildStatusSuccess(build);
 
-    BuildResponse builds = getBuilds(job, "builds");
+    BuildResponse builds = getBuilds(job, "builds/?orderBy=asc");
 
     Assert.assertEquals(1, builds.getCount());
     BuildExt buildExt = builds.getBuilds().get(0);
@@ -65,7 +66,7 @@ public class BuildAPITest {
     QueueTaskFuture<FreeStyleBuild> build2 = job.scheduleBuild2(0);
     jenkinsRule.assertBuildStatusSuccess(build2);
 
-    BuildResponse builds = getBuilds(job, "builds");
+    BuildResponse builds = getBuilds(job, "builds/?orderBy=asc");
 
     Assert.assertEquals(2, builds.getCount());
     BuildExt buildExt = builds.getBuilds().get(1);
@@ -81,7 +82,7 @@ public class BuildAPITest {
       jenkinsRule.assertBuildStatusSuccess(build);
     }
 
-    BuildResponse builds = getBuilds(job, "builds?size=5");
+    BuildResponse builds = getBuilds(job, "builds?size=5&orderBy=asc");
 
     Assert.assertEquals(5, builds.getCount());
     BuildExt buildExt = builds.getBuilds().get(4);
@@ -97,7 +98,7 @@ public class BuildAPITest {
       jenkinsRule.assertBuildStatusSuccess(build);
     }
 
-    BuildResponse builds = getBuilds(job, "builds?start=6");
+    BuildResponse builds = getBuilds(job, "builds?start=6&orderBy=asc");
 
     Assert.assertEquals(5, builds.getCount());
     BuildExt buildExt = builds.getBuilds().get(4);
@@ -113,7 +114,7 @@ public class BuildAPITest {
       jenkinsRule.assertBuildStatusSuccess(build);
     }
 
-    BuildResponse builds = getBuilds(job, "builds?start=6&size=2");
+    BuildResponse builds = getBuilds(job, "builds?start=6&size=2&orderBy=asc");
 
     Assert.assertEquals(2, builds.getCount());
     BuildExt buildExt = builds.getBuilds().get(1);
@@ -161,6 +162,30 @@ public class BuildAPITest {
 
     Assert.assertEquals(10, additionalBuilds.size());
   }
+
+   @Test
+   public void testFetchesBuildsInAscendingOrder() throws Exception {
+     FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+     for (int i = 0; i < 10; i++) {
+       QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+       jenkinsRule.assertBuildStatusSuccess(build);
+     }
+
+     BuildResponse builds = getBuilds(job, "builds/?orderBy=asc");
+     Assert.assertEquals(builds.getBuilds().get(0).getId(), "1");
+   }
+  @Test
+  public void testFetchesBuildsInDescendingOrder() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+    for (int i = 0; i < 10; i++) {
+      QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+      jenkinsRule.assertBuildStatusSuccess(build);
+    }
+
+    BuildResponse builds = getBuilds(job, "builds/?orderBy=desc");
+    Assert.assertEquals(builds.getBuilds().get(0).getId(), "10");
+  }
+
 
   private void assertBuildInfoOkay(Job job, BuildExt buildExt, String jobNumber) {
     Assert.assertEquals("TestJob #" + jobNumber, buildExt.getFullName());
