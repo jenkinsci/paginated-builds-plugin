@@ -1,4 +1,4 @@
-package io.jenkins.plugins.paginatedbuilds.rest.external;
+package io.jenkins.plugins.paginatedbuilds.model;
 
 import java.util.List;
 

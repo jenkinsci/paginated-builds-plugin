@@ -1,72 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
- ~ The MIT License
- ~
- ~ Copyright (c) 2022, CloudBees, Inc.
- ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy
- ~ of this software and associated documentation files (the "Software"), to deal
- ~ in the Software without restriction, including without limitation the rights
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- ~ copies of the Software, and to permit persons to whom the Software is
- ~ furnished to do so, subject to the following conditions:
- ~
- ~ The above copyright notice and this permission notice shall be included in
- ~ all copies or substantial portions of the Software.
- ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- ~ THE SOFTWARE.
-  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.40</version>
+        <version>4.38</version>
         <relativePath />
     </parent>
-
-    <groupId>org.jenkins-ci.plugins.paginated-builds</groupId>
+    <groupId>io.jenkins.plugins</groupId>
     <artifactId>paginated-builds</artifactId>
     <version>${revision}${changelist}</version>
-    <packaging>pom</packaging>
-    <name>Paginated Builds: Parent POM</name>
-
-    <url>https://github.com/lineville/paginated-builds</url>
-
+    <packaging>hpi</packaging>
+    <name>Paginated Builds</name>
+    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
     <licenses>
         <license>
             <name>MIT License</name>
             <url>https://opensource.org/licenses/MIT</url>
-            <distribution>repo</distribution>
         </license>
     </licenses>
-
-    <scm>
-        <connection>scm:git:git://github.com/jenkinsci/paginated-builds.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/paginated-builds.git</developerConnection>
-        <url>https://github.com/jenkinsci/paginated-builds</url>
+    <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
+        <connection>scm:git:https://github.com/${gitHubRepo}</connection>
+        <developerConnection>scm:git:https://github.com/${gitHubRepo}</developerConnection>
         <tag>${scmTag}</tag>
+        <url>https://github.com/${gitHubRepo}</url>
     </scm>
-
     <properties>
-        <revision>2.24</revision>
-        <bom>2.235.x</bom>
-        <jenkins.version>2.277.1</jenkins.version>
+        <revision>1.0</revision>
         <changelist>-SNAPSHOT</changelist>
+        <jenkins.version>2.303.3</jenkins.version>
         <java.level>8</java.level>
-        <workflow.version>2.0</workflow.version>
-        <node.version>10.17.0</node.version>
-        <npm.version>6.14.8</npm.version>
-        <frontend-version>1.10.0</frontend-version>
+        <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     </properties>
 
+    <dependencies>
+                    
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.pipeline-stage-view</groupId>
+            <artifactId>pipeline-rest-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-aggregator</artifactId>
+            <version>2.5</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-cps</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>jackson2-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>bom-2.303.x</artifactId>
+                <version>1210.vcd41f6657f03</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <repositories>
         <repository>
             <id>repo.jenkins-ci.org</id>
@@ -79,46 +99,4 @@
             <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <modules>
-        <module>api</module>
-    </modules>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <tagNameFormat>paginated-builds-@{project.version}</tagNameFormat>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-${bom}</artifactId>
-                <version>918.vae501d2cdc99</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-annotations</artifactId>
-                <version>4.6.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.json</groupId>
-                <artifactId>json</artifactId>
-                <version>20220320</version>
-            </dependency>
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>1.30</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
