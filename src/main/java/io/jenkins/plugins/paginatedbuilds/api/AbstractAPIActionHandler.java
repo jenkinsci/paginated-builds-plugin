@@ -49,7 +49,7 @@ public abstract class AbstractAPIActionHandler extends TransientActionFactory<Jo
             instance.target = target;
             return Collections.singleton(instance);
         } catch (Exception e) {
-            throw new IllegalStateException(String.format("Workflow API Action class '%s' does not implement a public default constructor.", getClass().getName()));
+            throw new IllegalStateException(String.format("Paginated Builds API Action class '%s' does not implement a public default constructor.", getClass().getName()));
         }
     }
 }
