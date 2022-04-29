@@ -1,14 +1,11 @@
 package io.jenkins.plugins;
 
+import hudson.model.*;
 import io.jenkins.plugins.paginatedbuilds.api.*;
 import io.jenkins.plugins.paginatedbuilds.model.*;
 import com.gargoylesoftware.htmlunit.Page;
 import hudson.model.queue.QueueTaskFuture;
-import hudson.model.Job;
-import hudson.model.Run;
 import hudson.model.Fingerprint.RangeSet;
-import hudson.model.FreeStyleProject;
-import hudson.model.FreeStyleBuild;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -81,7 +78,7 @@ public class BuildAPITest {
       jenkinsRule.assertBuildStatusSuccess(build);
     }
 
-    BuildResponse builds = getBuilds(job, "builds?size=5&orderBy=asc");
+    BuildResponse builds = getBuilds(job, "builds/?size=5&orderBy=asc");
 
     Assert.assertEquals(5, builds.getCount());
     BuildExt buildExt = builds.getBuilds().get(4);
@@ -97,7 +94,7 @@ public class BuildAPITest {
       jenkinsRule.assertBuildStatusSuccess(build);
     }
 
-    BuildResponse builds = getBuilds(job, "builds?start=6&orderBy=asc");
+    BuildResponse builds = getBuilds(job, "builds/?start=6&orderBy=asc");
 
     Assert.assertEquals(5, builds.getCount());
     BuildExt buildExt = builds.getBuilds().get(4);
@@ -113,7 +110,7 @@ public class BuildAPITest {
       jenkinsRule.assertBuildStatusSuccess(build);
     }
 
-    BuildResponse builds = getBuilds(job, "builds?start=6&size=2&orderBy=asc");
+    BuildResponse builds = getBuilds(job, "builds/?start=6&size=2&orderBy=asc");
 
     Assert.assertEquals(2, builds.getCount());
     BuildExt buildExt = builds.getBuilds().get(1);
@@ -157,9 +154,9 @@ public class BuildAPITest {
 
     RangeSet range = RangeSet.fromString("1-8", false);
     List<Run> rawBuilds = ((Job) job).getBuilds(range);
-    List<Run> additionalBuilds = buildAPI.getAdditionalBuilds((Job) job, rawBuilds, 15);
+    buildAPI.getAdditionalBuilds((Job) job, rawBuilds, 15);
 
-    Assert.assertEquals(10, additionalBuilds.size());
+    Assert.assertEquals(10, rawBuilds.size());
   }
 
    @Test
@@ -173,6 +170,19 @@ public class BuildAPITest {
      BuildResponse builds = getBuilds(job, "builds/?orderBy=asc");
      Assert.assertEquals(builds.getBuilds().get(0).getId(), "1");
    }
+
+  @Test
+  public void testFetchesBuildsInDescendingOrderNoOrderBy() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+    for (int i = 0; i < 10; i++) {
+      QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+      jenkinsRule.assertBuildStatusSuccess(build);
+    }
+
+    BuildResponse builds = getBuilds(job, "builds/");
+    Assert.assertEquals(builds.getBuilds().get(0).getId(), "10");
+    Assert.assertEquals(builds.getBuilds().get(9).getId(), "1");
+  }
 
    @Test
   public void testFetchesBuildsInDescendingOrder() throws Exception {
@@ -196,6 +206,45 @@ public class BuildAPITest {
 
     BuildResponse builds = getBuilds(job, "builds/?orderBy=NotanOrderBy");
     Assert.assertEquals(builds.getBuilds().get(0).getId(), "10");
+  }
+
+  @Test
+  public void testCreateRangeSet() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+    for (int i = 0; i < 10; i++) {
+      QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+      jenkinsRule.assertBuildStatusSuccess(build);
+    }
+
+    RangeSet range = BuildAPI.createRangeSet(job, 1, 5, true);
+    Assert.assertEquals(range.min(), 1);
+    Assert.assertEquals(range.max(), 6);
+  }
+
+  @Test
+  public void testCreateRangeSet2() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+    for (int i = 0; i < 10; i++) {
+      QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+      jenkinsRule.assertBuildStatusSuccess(build);
+    }
+
+    RangeSet range = BuildAPI.createRangeSet(job, 0, 5, true);
+    Assert.assertEquals(range.min(), 6);
+    Assert.assertEquals(range.max(), 11);
+  }
+
+  @Test
+  public void testCreateRangeSet3() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+    for (int i = 0; i < 10; i++) {
+      QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+      jenkinsRule.assertBuildStatusSuccess(build);
+    }
+
+    RangeSet range = BuildAPI.createRangeSet(job, 0, 5, false);
+    Assert.assertEquals(range.min(), 1);
+    Assert.assertEquals(range.max(), 6);
   }
 
   private void assertBuildInfoOkay(Job job, BuildExt buildExt, String jobNumber) {
