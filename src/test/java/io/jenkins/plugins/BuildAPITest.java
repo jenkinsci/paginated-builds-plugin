@@ -22,7 +22,6 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import org.xml.sax.SAXException;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -174,7 +173,8 @@ public class BuildAPITest {
      BuildResponse builds = getBuilds(job, "builds/?orderBy=asc");
      Assert.assertEquals(builds.getBuilds().get(0).getId(), "1");
    }
-  @Test
+
+   @Test
   public void testFetchesBuildsInDescendingOrder() throws Exception {
     FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
     for (int i = 0; i < 10; i++) {
@@ -186,6 +186,17 @@ public class BuildAPITest {
     Assert.assertEquals(builds.getBuilds().get(0).getId(), "10");
   }
 
+  @Test
+  public void testFetchesBuildsInDescendingOrderByDefault() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+    for (int i = 0; i < 10; i++) {
+      QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+      jenkinsRule.assertBuildStatusSuccess(build);
+    }
+
+    BuildResponse builds = getBuilds(job, "builds/?orderBy=NotanOrderBy");
+    Assert.assertEquals(builds.getBuilds().get(0).getId(), "10");
+  }
 
   private void assertBuildInfoOkay(Job job, BuildExt buildExt, String jobNumber) {
     Assert.assertEquals("TestJob #" + jobNumber, buildExt.getFullName());

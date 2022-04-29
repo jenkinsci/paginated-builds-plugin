@@ -28,21 +28,18 @@
     <properties>
         <revision>1.0</revision>
         <changelist>-SNAPSHOT</changelist>
-        <jenkins.version>2.303.3</jenkins.version>
+        <bom>2.277.x</bom>
+        <jenkins.version>2.277.4</jenkins.version>
         <java.level>8</java.level>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     </properties>
 
     <dependencies>
-                    
+
         <dependency>
             <groupId>org.jenkins-ci.plugins.pipeline-stage-view</groupId>
             <artifactId>pipeline-rest-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs-annotations</artifactId>
+            <version>2.9</version>
         </dependency>
         
         <dependency>
@@ -51,16 +48,11 @@
             <version>2.5</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-cps</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jenkins-ci.plugins</groupId>
-            <artifactId>jackson2-api</artifactId>
         </dependency>
 
         <dependency>
@@ -80,8 +72,8 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.303.x</artifactId>
-                <version>1210.vcd41f6657f03</version>
+                <artifactId>bom-${bom}</artifactId>
+                <version>984.vb5eaac999a7e</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

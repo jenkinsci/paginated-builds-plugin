@@ -26,7 +26,6 @@ import io.jenkins.plugins.paginatedbuilds.model.BuildResponse;
 public class BuildAPI extends AbstractAPIActionHandler {
     private static final int DEFAULT_PAGE_SIZE = 100;
     private static final int DEFAULT_START = 1;
-    private static final String DEFAULT_ORDER_BY = "desc";
 
     public static String getUrl(Job job) {
         return ModelUtil.getFullItemUrl(job.getUrl()) + URL_BASE + "/";
@@ -41,7 +40,7 @@ public class BuildAPI extends AbstractAPIActionHandler {
     public BuildResponse doBuilds(@QueryParameter int start, @QueryParameter int size, @QueryParameter String orderBy) {
         size = size == 0 ? DEFAULT_PAGE_SIZE : size;
         start = start == 0 ? DEFAULT_START : start;
-        orderBy = orderBy == null ? DEFAULT_ORDER_BY : orderBy;
+        boolean shouldReverse = orderBy == null || orderBy.compareToIgnoreCase("asc") != 0;
 
         Job job = getJob();
         RangeSet range = RangeSet.fromString(start + "-" + (size + start - 1), false);
@@ -54,7 +53,7 @@ public class BuildAPI extends AbstractAPIActionHandler {
                 .map(b -> new BuildExt(b))
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
-        if (orderBy.equals("desc")) {
+        if (shouldReverse) {
             builds.sort((b1, b2) -> Integer.parseInt(b2.getId()) - Integer.parseInt(b1.getId()));
         }
         return new BuildResponse(builds.size(), builds);
