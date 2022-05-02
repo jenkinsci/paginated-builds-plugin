@@ -144,6 +144,15 @@ public class BuildAPITest {
   }
 
   @Test
+  public void testNoBuilds() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+    BuildAPI buildAPI = new BuildAPI();
+    BuildResponse builds = buildAPI.doBuilds(0, 10, "desc");
+
+    Assert.assertEquals(0, builds.getCount());
+  }
+
+  @Test
   public void testAdditionalBuilds() throws Exception {
     FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
     BuildAPI buildAPI = new BuildAPI();
@@ -154,7 +163,7 @@ public class BuildAPITest {
 
     RangeSet range = RangeSet.fromString("1-8", false);
     List<Run> rawBuilds = ((Job) job).getBuilds(range);
-    buildAPI.getAdditionalBuilds((Job) job, rawBuilds, 15);
+    buildAPI.addAdditionalBuilds((Job) job, rawBuilds, 15);
 
     Assert.assertEquals(10, rawBuilds.size());
   }

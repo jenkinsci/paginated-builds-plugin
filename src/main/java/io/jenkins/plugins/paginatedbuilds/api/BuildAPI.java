@@ -37,28 +37,32 @@ public class BuildAPI extends AbstractAPIActionHandler {
 
     @ServeJson
     public BuildResponse doBuilds(@QueryParameter int start, @QueryParameter int size, @QueryParameter String orderBy) {
-        Job job = getJob();
-        
+
         boolean shouldReverse = orderBy == null || orderBy.compareToIgnoreCase("asc") != 0;
         size = size == 0 ? DEFAULT_PAGE_SIZE : size;
 
-        RangeSet range = createRangeSet(job, start, size, shouldReverse);
-        List<Run> rawBuilds = job.getBuilds(range);
+        try {
+            Job job = getJob();
+            RangeSet range = createRangeSet(job, start, size, shouldReverse);
+            List<Run> rawBuilds = job.getBuilds(range);
 
-        // In case there were some missing builds in the range set, fill out the rest
-        getAdditionalBuilds(job, rawBuilds, size);
+            // In case there were some missing builds in the range set, fill out the rest
+            addAdditionalBuilds(job, rawBuilds, size);
 
-        ArrayList<BuildExt> builds = rawBuilds.stream()
-                .map(b -> new BuildExt(b))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+            ArrayList<BuildExt> builds = rawBuilds.stream()
+                    .map(b -> new BuildExt(b))
+                    .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
-        if (shouldReverse) {
-            builds.sort((b1, b2) -> Integer.parseInt(b2.getId()) - Integer.parseInt(b1.getId()));
+            if (shouldReverse) {
+                builds.sort((b1, b2) -> Integer.parseInt(b2.getId()) - Integer.parseInt(b1.getId()));
+            }
+            return new BuildResponse(builds.size(), builds);
+        } catch (Exception e) {
+            return new BuildResponse(0, new ArrayList<BuildExt>());
         }
-        return new BuildResponse(builds.size(), builds);
     }
 
-    public void getAdditionalBuilds(Job job, List<Run> builds, int size) {
+    public void addAdditionalBuilds(Job job, List<Run> builds, int size) {
         while (builds.size() < size) {
             int missingBuilds = size - builds.size();
             Run nextRun = builds.get(builds.size() - 1).getNextBuild();
@@ -68,6 +72,7 @@ public class BuildAPI extends AbstractAPIActionHandler {
 
             RangeSet range = RangeSet
                     .fromString(nextRun.getId() + "-" + (Integer.parseInt(nextRun.getId()) + missingBuilds - 1), false);
+
             builds.addAll(job.getBuilds(range));
         }
     }
