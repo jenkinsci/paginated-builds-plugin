@@ -1,4 +1,0 @@
-<?jelly escape-by-default='true'?>
-<div>
-  Provides a REST API to access paginated build data.
-</div>

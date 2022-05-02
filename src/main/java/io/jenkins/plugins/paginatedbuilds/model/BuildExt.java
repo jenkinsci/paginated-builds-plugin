@@ -1,4 +1,4 @@
-package io.jenkins.plugins.paginatedbuilds.rest.external;
+package io.jenkins.plugins.paginatedbuilds.model;
 
 import hudson.model.Result;
 import hudson.model.Run;
@@ -15,7 +15,8 @@ public class BuildExt {
     private String result;
     private String builtOn;
 
-    public BuildExt() {}
+    public BuildExt() {
+    }
 
     public BuildExt(Run<?, ?> run) {
         this.id = run.getId();
@@ -37,7 +38,7 @@ public class BuildExt {
     public String getId() {
         return id;
     }
-    
+
     public long getQueueTimeMillis() {
         return queueTimeMillis;
     }

@@ -4,15 +4,16 @@ The `paginated-builds` plugin exposes a REST API endpoint to access paginated bu
 
 ## Paginated Builds Endpoint
 
-GET `<jenkins_url>/job/<job_name>/builds?start=<build_id>&size=<page_size>`
+GET `<jenkins_url>/job/<job_name>/builds?start=<build_id>&size=<page_size>&orderBy=<order_by>`
 
 - `start`: The build ID to start from. (1 if not specified)
 - `size`: The number of builds to return. (100 if not specified)
 - `job_name`: The name of the Jenkins job to get builds for.
+- `order_by`: The order to return the builds in (`asc` or `desc`). (`desc` if not specified)
 - `jenkins_url`: The URL of the Jenkins instance.
 
 ```json
-// localhost:8080/jenkins/job/integration-tests/job/designer/job/freestyle-elephant/builds?start=1&size=2
+// localhost:8080/jenkins/job/integration-tests/job/designer/job/freestyle-elephant/builds?start=1&size=2&orderBy=asc
 
 {
   "count": 2,
