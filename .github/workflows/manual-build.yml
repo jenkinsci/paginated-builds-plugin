@@ -1,0 +1,28 @@
+name: Manual Build Version 2.249.1
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Change jenkins version
+        run: sed -i 's/<jenkins.version>.*<\/jenkins.version>/<jenkins.version>2.249.1<\/jenkins.version>/' pom.xml
+      - name: Change bom version
+        run: sed -i 's/<bom>.*<\/bom>/<bom>2.249.x<\/bom>/' pom.xml
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots package
+      - name: Test
+        run: mvn verify
+      - name: Archive Plugin
+        uses: actions/upload-artifact@v3
+        with:
+          name: paginated-builds
+          path: target/paginated-builds.hpi
