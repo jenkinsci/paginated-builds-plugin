@@ -47,10 +47,11 @@ public class BuildAPI extends AbstractAPIActionHandler {
             List<Run> rawBuilds = job.getBuilds(range);
 
             // In case there were some missing builds in the range set, fill out the rest
-            addAdditionalBuilds(job, rawBuilds, size);
+            addAdditionalBuilds(job, rawBuilds, size, shouldReverse);
 
             ArrayList<BuildExt> builds = rawBuilds.stream()
                     .map(b -> new BuildExt(b))
+                    .distinct()
                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
             if (shouldReverse) {
@@ -62,16 +63,15 @@ public class BuildAPI extends AbstractAPIActionHandler {
         }
     }
 
-    public void addAdditionalBuilds(Job job, List<Run> builds, int size) {
+    public void addAdditionalBuilds(Job job, List<Run> builds, int size, boolean shouldReverse) {
         while (builds.size() < size) {
             int missingBuilds = size - builds.size();
-            Run nextRun = builds.get(builds.size() - 1).getNextBuild();
+            Run nextRun = shouldReverse ? builds.get(0).getPreviousBuild() : builds.get(builds.size() - 1).getNextBuild();
 
             if (nextRun == null)
                 break;
 
-            RangeSet range = RangeSet
-                    .fromString(nextRun.getId() + "-" + (Integer.parseInt(nextRun.getId()) + missingBuilds - 1), false);
+            RangeSet range = createRangeSet(job, Integer.parseInt(nextRun.getId()), missingBuilds, shouldReverse);
 
             builds.addAll(job.getBuilds(range));
         }
