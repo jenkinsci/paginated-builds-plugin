@@ -1,3 +1,1 @@
 _extends: .github
-name-template: paginated-builds-$NEXT_PATCH_VERSION
-tag-template: paginated-builds-$NEXT_MINOR_VERSION
