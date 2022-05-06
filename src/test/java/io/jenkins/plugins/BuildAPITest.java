@@ -19,6 +19,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import org.xml.sax.SAXException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -273,6 +274,28 @@ public class BuildAPITest {
     RangeSet range = BuildAPI.createRangeSet(job, 0, 5, false);
     Assert.assertEquals(range.min(), 1);
     Assert.assertEquals(range.max(), 6);
+  }
+
+  @Test
+  public void testUniqueByKey() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+
+    QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+    jenkinsRule.assertBuildStatusSuccess(build);
+
+
+    RangeSet range = RangeSet.fromString("1-2", false);
+    List<FreeStyleBuild> rawBuilds1 = job.getBuilds(range);
+    List<FreeStyleBuild> rawBuilds2 = job.getBuilds(range);
+
+    rawBuilds1.addAll(rawBuilds2);
+
+    List<BuildExt> deDuped = rawBuilds1.stream()
+            .map(b -> new BuildExt(b))
+            .filter(BuildAPI.distinctByKey(b -> b.getId()))
+            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+    Assert.assertEquals(deDuped.size(), 1);
   }
 
   private void assertBuildInfoOkay(Job job, BuildExt buildExt, String jobNumber) {
