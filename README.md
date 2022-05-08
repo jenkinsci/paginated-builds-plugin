@@ -1,4 +1,4 @@
-# Paginated builds plugin
+# Paginated builds plugin  [![Tests](https://github.com/jenkinsci/paginated-builds-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/jenkinsci/paginated-builds-plugin/actions/workflows/ci.yml)
 
 The `paginated-builds` plugin exposes a REST API endpoint that you can use to access paginated build data for a Jenkins job. Jenkins does not provide an out of the box method to access build data in pages — you can either get all the builds or the 100 most recent builds. This plugin fetches historical build data for jobs that have a large number of builds by enabling you to request specific pages of historical data.
 
