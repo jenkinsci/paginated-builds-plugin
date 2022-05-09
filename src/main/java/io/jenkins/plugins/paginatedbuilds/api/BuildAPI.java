@@ -2,6 +2,10 @@ package io.jenkins.plugins.paginatedbuilds.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import com.cloudbees.workflow.util.ModelUtil;
 import com.cloudbees.workflow.util.ServeJson;
@@ -47,12 +51,13 @@ public class BuildAPI extends AbstractAPIActionHandler {
             List<Run> rawBuilds = job.getBuilds(range);
 
             // In case there were some missing builds in the range set, fill out the rest
-            addAdditionalBuilds(job, rawBuilds, size);
+            addAdditionalBuilds(job, rawBuilds, size, shouldReverse);
 
-            ArrayList<BuildExt> builds = rawBuilds.stream()
+            List<BuildExt> builds = rawBuilds.stream()
                     .map(b -> new BuildExt(b))
+                    .filter(distinctByKey(b -> b.getId()))
                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-
+            
             if (shouldReverse) {
                 builds.sort((b1, b2) -> Integer.parseInt(b2.getId()) - Integer.parseInt(b1.getId()));
             }
@@ -62,16 +67,16 @@ public class BuildAPI extends AbstractAPIActionHandler {
         }
     }
 
-    public void addAdditionalBuilds(Job job, List<Run> builds, int size) {
+    public void addAdditionalBuilds(Job job, List<Run> builds, int size, boolean shouldReverse) {
         while (builds.size() < size) {
             int missingBuilds = size - builds.size();
-            Run nextRun = builds.get(builds.size() - 1).getNextBuild();
+            Run nextRun = shouldReverse ? builds.get(0).getPreviousBuild()
+                    : builds.get(builds.size() - 1).getNextBuild();
 
             if (nextRun == null)
                 break;
 
-            RangeSet range = RangeSet
-                    .fromString(nextRun.getId() + "-" + (Integer.parseInt(nextRun.getId()) + missingBuilds - 1), false);
+            RangeSet range = createRangeSet(job, Integer.parseInt(nextRun.getId()), missingBuilds, shouldReverse);
 
             builds.addAll(job.getBuilds(range));
         }
@@ -88,5 +93,12 @@ public class BuildAPI extends AbstractAPIActionHandler {
 
         int end = start + size - 1;
         return RangeSet.fromString(start + "-" + end, false);
+    }
+
+    // Taken from https://www.baeldung.com/java-streams-distinct-by
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }

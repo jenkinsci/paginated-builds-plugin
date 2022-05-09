@@ -19,6 +19,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import org.xml.sax.SAXException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -161,11 +162,27 @@ public class BuildAPITest {
       jenkinsRule.assertBuildStatusSuccess(build);
     }
 
-    RangeSet range = RangeSet.fromString("1-8", false);
-    List<Run> rawBuilds = ((Job) job).getBuilds(range);
-    buildAPI.addAdditionalBuilds((Job) job, rawBuilds, 15);
+    RangeSet range = BuildAPI.createRangeSet(job, 1, 8, false);
+    List<Run> builds = ((Job) job).getBuilds(range);
+    buildAPI.addAdditionalBuilds((Job) job, builds, 10, false);
 
-    Assert.assertEquals(10, rawBuilds.size());
+    Assert.assertEquals(10, builds.size());
+  }
+
+  @Test
+  public void testAdditionalBuildsDesc() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+    BuildAPI buildAPI = new BuildAPI();
+    for (int i = 0; i < 10; i++) {
+      QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+      jenkinsRule.assertBuildStatusSuccess(build);
+    }
+
+    RangeSet range = BuildAPI.createRangeSet(job, 0, 8, true);
+    List<Run> builds = ((Job) job).getBuilds(range);
+    buildAPI.addAdditionalBuilds((Job) job, builds, 10, true);
+
+    Assert.assertEquals(10, builds.size());
   }
 
    @Test
@@ -178,6 +195,7 @@ public class BuildAPITest {
 
      BuildResponse builds = getBuilds(job, "builds/?orderBy=asc");
      Assert.assertEquals(builds.getBuilds().get(0).getId(), "1");
+     Assert.assertEquals(builds.getBuilds().get(9).getId(), "10");
    }
 
   @Test
@@ -203,7 +221,8 @@ public class BuildAPITest {
 
     BuildResponse builds = getBuilds(job, "builds/?orderBy=desc");
     Assert.assertEquals(builds.getBuilds().get(0).getId(), "10");
-  }
+     Assert.assertEquals(builds.getBuilds().get(9).getId(), "1");
+   }
 
   @Test
   public void testFetchesBuildsInDescendingOrderByDefault() throws Exception {
@@ -215,6 +234,7 @@ public class BuildAPITest {
 
     BuildResponse builds = getBuilds(job, "builds/?orderBy=NotanOrderBy");
     Assert.assertEquals(builds.getBuilds().get(0).getId(), "10");
+    Assert.assertEquals(builds.getBuilds().get(9).getId(), "1");
   }
 
   @Test
@@ -254,6 +274,28 @@ public class BuildAPITest {
     RangeSet range = BuildAPI.createRangeSet(job, 0, 5, false);
     Assert.assertEquals(range.min(), 1);
     Assert.assertEquals(range.max(), 6);
+  }
+
+  @Test
+  public void testUniqueByKey() throws Exception {
+    FreeStyleProject job = jenkinsRule.jenkins.createProject(FreeStyleProject.class, "TestJob");
+
+    QueueTaskFuture<FreeStyleBuild> build = job.scheduleBuild2(0);
+    jenkinsRule.assertBuildStatusSuccess(build);
+
+
+    RangeSet range = RangeSet.fromString("1-2", false);
+    List<FreeStyleBuild> rawBuilds1 = job.getBuilds(range);
+    List<FreeStyleBuild> rawBuilds2 = job.getBuilds(range);
+
+    rawBuilds1.addAll(rawBuilds2);
+
+    List<BuildExt> deDuped = rawBuilds1.stream()
+            .map(b -> new BuildExt(b))
+            .filter(BuildAPI.distinctByKey(b -> b.getId()))
+            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+    Assert.assertEquals(deDuped.size(), 1);
   }
 
   private void assertBuildInfoOkay(Job job, BuildExt buildExt, String jobNumber) {
