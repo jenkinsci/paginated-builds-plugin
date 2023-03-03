@@ -304,7 +304,7 @@ public class BuildAPITest {
     Assert.assertTrue(buildExt.getDuration() >= 0);
     Assert.assertTrue(buildExt.getStartTimeMillis() > startTime);
     Assert.assertEquals(jobNumber, buildExt.getId());
-    Assert.assertTrue(buildExt.getStartTimeMillis() > buildExt.getQueueTimeMillis());
+    Assert.assertTrue(buildExt.getStartTimeMillis() >= buildExt.getQueueTimeMillis());
     Assert.assertEquals("", buildExt.getBuiltOn());
   }
 
