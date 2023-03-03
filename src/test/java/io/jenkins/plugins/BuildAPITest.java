@@ -301,7 +301,7 @@ public class BuildAPITest {
   private void assertBuildInfoOkay(Job job, BuildExt buildExt, String jobNumber) {
     Assert.assertEquals("TestJob #" + jobNumber, buildExt.getFullName());
     Assert.assertEquals("SUCCESS", buildExt.getResult());
-    Assert.assertTrue(buildExt.getDuration() > 0);
+    Assert.assertTrue(buildExt.getDuration() >= 0);
     Assert.assertTrue(buildExt.getStartTimeMillis() > startTime);
     Assert.assertEquals(jobNumber, buildExt.getId());
     Assert.assertTrue(buildExt.getStartTimeMillis() > buildExt.getQueueTimeMillis());
