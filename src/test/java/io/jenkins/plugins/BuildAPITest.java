@@ -3,7 +3,7 @@ package io.jenkins.plugins;
 import hudson.model.*;
 import io.jenkins.plugins.paginatedbuilds.api.*;
 import io.jenkins.plugins.paginatedbuilds.model.*;
-import com.gargoylesoftware.htmlunit.Page;
+import org.htmlunit.Page;
 import hudson.model.queue.QueueTaskFuture;
 import hudson.model.Fingerprint.RangeSet;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
