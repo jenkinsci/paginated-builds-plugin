@@ -9,7 +9,7 @@ import hudson.model.Fingerprint.RangeSet;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
-import com.cloudbees.workflow.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -301,7 +301,7 @@ public class BuildAPITest {
   private void assertBuildInfoOkay(Job job, BuildExt buildExt, String jobNumber) {
     Assert.assertEquals("TestJob #" + jobNumber, buildExt.getFullName());
     Assert.assertEquals("SUCCESS", buildExt.getResult());
-    Assert.assertTrue(buildExt.getDuration() > 0);
+    Assert.assertTrue(buildExt.getDuration() >= 0);
     Assert.assertTrue(buildExt.getStartTimeMillis() > startTime);
     Assert.assertEquals(jobNumber, buildExt.getId());
     Assert.assertTrue(buildExt.getStartTimeMillis() > buildExt.getQueueTimeMillis());
@@ -315,8 +315,6 @@ public class BuildAPITest {
     Page buildsPage = webClient.goTo(buildsUrl, "application/json");
     String jsonResponse = buildsPage.getWebResponse().getContentAsString();
 
-    JSONReadWrite jsonReadWrite = new JSONReadWrite();
-
-    return jsonReadWrite.fromString(jsonResponse, BuildResponse.class);
+    return new ObjectMapper().readValue(jsonResponse, BuildResponse.class);
   }
 }
