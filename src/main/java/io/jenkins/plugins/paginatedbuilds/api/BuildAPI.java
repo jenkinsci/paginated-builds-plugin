@@ -7,10 +7,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import com.cloudbees.workflow.util.ModelUtil;
-import com.cloudbees.workflow.util.ServeJson;
-
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.StaplerRequest2;
 
 import hudson.Extension;
 import hudson.model.Job;
@@ -31,7 +30,13 @@ public class BuildAPI extends AbstractAPIActionHandler {
     private static final int DEFAULT_PAGE_SIZE = 100;
 
     public static String getUrl(Job job) {
-        return ModelUtil.getFullItemUrl(job.getUrl()) + URL_BASE + "/";
+        String itemUrl = job.getUrl();
+        if (!itemUrl.endsWith("/")) {
+            itemUrl += "/";
+        }
+        StaplerRequest2 currentRequest = Stapler.getCurrentRequest2();
+        String rootUrl = currentRequest != null ? currentRequest.getContextPath() : "/";
+        return rootUrl + "/" + itemUrl + URL_BASE + "/";
     }
 
     @ServeJson

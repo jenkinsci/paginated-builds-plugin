@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.40</version>
+        <version>6.2250.va_d01d559a_209</version>
         <relativePath />
     </parent>
     <groupId>io.jenkins.plugins</groupId>
@@ -28,24 +28,40 @@
     <properties>
         <revision>1.0</revision>
         <changelist>-SNAPSHOT</changelist>
-        <bom>2.277.x</bom>
-        <jenkins.version>2.277.4</jenkins.version>
-        <java.level>8</java.level>
+        <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+        <jenkins.baseline>2.568</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
     </properties>
 
     <dependencies>
 
         <dependency>
-            <groupId>org.jenkins-ci.plugins.pipeline-stage-view</groupId>
-            <artifactId>pipeline-rest-api</artifactId>
-            <version>2.9</version>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>jackson2-api</artifactId>
         </dependency>
         
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
-            <artifactId>workflow-aggregator</artifactId>
-            <version>2.5</version>
+            <artifactId>workflow-basic-steps</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-durable-task-step</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-job</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>pipeline-stage-step</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -72,8 +88,8 @@
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-${bom}</artifactId>
-                <version>984.vb5eaac999a7e</version>
+                <artifactId>bom-${jenkins.baseline}.x</artifactId>
+                <version>7349.vd0a_cb_6c87a_31</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

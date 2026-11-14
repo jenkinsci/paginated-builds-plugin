@@ -13,7 +13,7 @@ public abstract class AbstractAPIActionHandler extends TransientActionFactory<Jo
 
     public static final String URL_BASE = "builds";
 
-    public Job target;
+    private Job target;
 
     @Override
     public String getUrlName() {
