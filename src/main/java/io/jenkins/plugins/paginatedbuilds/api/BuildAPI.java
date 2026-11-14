@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerRequest2;
 
 import hudson.Extension;
 import hudson.model.Job;
@@ -34,7 +34,7 @@ public class BuildAPI extends AbstractAPIActionHandler {
         if (!itemUrl.endsWith("/")) {
             itemUrl += "/";
         }
-        StaplerRequest currentRequest = Stapler.getCurrentRequest();
+        StaplerRequest2 currentRequest = Stapler.getCurrentRequest2();
         String rootUrl = currentRequest != null ? currentRequest.getContextPath() : "/";
         return rootUrl + "/" + itemUrl + URL_BASE + "/";
     }
